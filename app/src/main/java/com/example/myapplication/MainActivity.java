@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,5 +79,38 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        // Znajdź ImageButton w pliku layout XML
+        ImageButton goToKontrolerButton = (ImageButton) findViewById(R.id.leftDrawerKontrolerImageButton);
+
+        // Dodaj nasłuchiwacz kliknięć do przycisku
+        goToKontrolerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Utwórz nowy fragment
+                Fragment fragment = new fragmentSterowanie();
+
+                // Pobierz menedżer fragmentów
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                // Rozpocznij transakcję fragmentu
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Zastąp bieżący fragment nowym fragmentem
+                fragmentTransaction.replace(R.id.widokGlowneMenu, fragment);
+
+                // Dodaj transakcję do stosu wstecz
+                fragmentTransaction.addToBackStack(null);
+
+                // Wykonaj transakcję
+                fragmentTransaction.commit();
+            }
+        });
+
+
+
+
     }
 }

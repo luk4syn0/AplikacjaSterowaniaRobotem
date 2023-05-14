@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="topText">Witaj w kontrolerze super-robota!</string>
+    <string name="leftDrawerKontrolerDesc">Przejscie do kontrolera</string>
+    <string name="leftDrawerInfoDesc">Przejscie do informacji o projekcie</string>
+    <string name="navMenuButtonDesc">Przejscie do informacji o projekcie</string>
+    <string name="mainPowitalnyText">Aby przejść do kontrolera rozwiń menu nawigacji po lewej stronie i naciśnij ikonę kontrolera. Możesz też nacisnąć ikonę "i", aby przejść do informacji o projekcie
+    \n Miłej zabawy!</string>
+    <string name="bocznyNapis">Wykonanie Lukasz Luszczyk \u0026 Dominik Broda @2023</string>
+</resources>

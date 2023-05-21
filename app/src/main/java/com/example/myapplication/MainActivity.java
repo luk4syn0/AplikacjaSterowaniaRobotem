@@ -82,32 +82,48 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        // Znajdź ImageButton w pliku layout XML
+        // Dodanie funkcjonalności do przycisku kierującego do kontrolera w "navbarze"
         ImageButton goToKontrolerButton = (ImageButton) findViewById(R.id.leftDrawerKontrolerImageButton);
-
-        // Dodaj nasłuchiwacz kliknięć do przycisku
         goToKontrolerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Utwórz nowy fragment
-                Fragment fragment = new fragmentSterowanie();
-
-                // Pobierz menedżer fragmentów
-                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment fragmentController = new fragmentSterowanie();
 
                 // Rozpocznij transakcję fragmentu
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                 // Zastąp bieżący fragment nowym fragmentem
-                fragmentTransaction.replace(R.id.widokGlowneMenu, fragment);
+                transaction.replace(R.id.widokGlowneMenu, fragmentController);
 
                 // Dodaj transakcję do stosu wstecz
-                fragmentTransaction.addToBackStack(null);
+                transaction.addToBackStack(null);
 
                 // Wykonaj transakcję
-                fragmentTransaction.commit();
+                transaction.commit();
             }
         });
+
+        // Dodanie funkcjonalności do przycisku kierującego do informacji w "navbarze"
+        ImageButton goToInfoButton = (ImageButton) findViewById(R.id.leftDrawerInfoImageButton);
+        goToInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragmentInfo = new fragmentInformacje();
+
+                // Rozpocznij transakcję fragmentu
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                // Zastąp bieżący fragment nowym fragmentem
+                transaction.replace(R.id.widokGlowneMenu, fragmentInfo);
+
+                // Dodaj transakcję do stosu wstecz
+                transaction.addToBackStack(null);
+
+                // Wykonaj transakcję
+                transaction.commit();
+            }
+        });
+
 
 
 

@@ -70,12 +70,13 @@
             android:layout_width="300dp"
             android:layout_height="32dp"
             android:autoSizeTextType="uniform"
+            android:text="@string/topowyText"
             android:textAlignment="center"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@tools:sample/lorem" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

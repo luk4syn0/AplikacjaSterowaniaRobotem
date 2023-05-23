@@ -22,15 +22,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        TextView textView = (TextView) findViewById(R.id.topText);
 
-        String topowaWiadomosc = getString(R.string.topText);
-        textView.setText(topowaWiadomosc);
 
 //        final ConstraintLayout drawer = (ConstraintLayout) findViewById(R.id.leftDrawer);
-        ImageButton imageButton = (ImageButton) findViewById(R.id.navMenuMainButton);
+        ImageButton navMenuButton = (ImageButton) findViewById(R.id.navMenuMainButton);
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        final boolean[] isDrawerVisible = {false};
+        navMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Pobierz referencję do ConstraintLayout o nazwie "drawer"
@@ -44,27 +42,19 @@ public class MainActivity extends AppCompatActivity {
                 alphaAnimator.setDuration(animDuration);
 
                 // Ustaw flagę, aby śledzić stan widoczności ConstraintLayout
-                final boolean[] isDrawerVisible = {false};
 
-                // Pobierz referencję do przycisku
-                ImageButton button = findViewById(R.id.navMenuMainButton);
+                //Rozważ animację dla parametru isDrawerVisible
+                if (isDrawerVisible[0]) {
+                    // Ukryj ConstraintLayout
+                    alphaAnimator.reverse();
+                } else {
+                    // Pokaż ConstraintLayout
+                    drawer.setVisibility(View.VISIBLE);
+                    alphaAnimator.start();
+                }
+                // Zmień stan flagi
+                isDrawerVisible[0] = !isDrawerVisible[0];
 
-                // Ustaw listener dla przycisku
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isDrawerVisible[0]) {
-                            // Ukryj ConstraintLayout
-                            alphaAnimator.reverse();
-                        } else {
-                            // Pokaż ConstraintLayout
-                            drawer.setVisibility(View.VISIBLE);
-                            alphaAnimator.start();
-                        }
-                        // Zmień stan flagi
-                        isDrawerVisible[0] = !isDrawerVisible[0];
-                    }
-                });
 
                 // Dodaj listener do animacji
                 alphaAnimator.addListener(new AnimatorListenerAdapter() {

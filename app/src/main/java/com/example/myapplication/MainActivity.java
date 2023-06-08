@@ -5,13 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +19,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
+
+
+
 
 
 
@@ -78,6 +88,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Fragment fragmentController = new fragmentSterowanie();
+
+                // Rozpocznij transakcję fragmentu
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                // Zastąp bieżący fragment nowym fragmentem
+                transaction.replace(R.id.widokGlowneMenu, fragmentController);
+
+                // Dodaj transakcję do stosu wstecz
+                transaction.addToBackStack(null);
+
+                // Wykonaj transakcję
+                transaction.commit();
+            }
+        });
+
+        // Dodanie funkcjonalności do przycisku kierującego do bluetooth w "navbarze"
+        ImageButton goToBLEButton = (ImageButton) findViewById(R.id.leftDrawerBLE);
+        goToBLEButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragmentController = new fragmentBT();
 
                 // Rozpocznij transakcję fragmentu
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

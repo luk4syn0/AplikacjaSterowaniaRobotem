@@ -1,10 +1,10 @@
 package com.example.myapplication;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,11 +25,10 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.UUID;
 
 
 public class fragmentBT extends Fragment {
@@ -41,6 +40,9 @@ public class fragmentBT extends Fragment {
 
     private BluetoothAdapter bluetoothAdapter;
     private TextView connectionStatusTextView;
+
+
+
 
     //TODO
     // Ogarnąć te permisje bo aż oczy bolą od tego bałaganu
@@ -70,6 +72,7 @@ public class fragmentBT extends Fragment {
 
     }
 
+    @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,6 +97,9 @@ public class fragmentBT extends Fragment {
         // Inicjalizacja pola TextView dla stanu połączenia
         connectionStatusTextView = view.findViewById(R.id.textViewConnectionStatus);
 
+
+
+
         // Inicjalizacja listy urządzeń
         ListView deviceListView = view.findViewById(R.id.listViewDevices);
         ArrayList<String> deviceListNazwy = getPairedDevices().get(0);
@@ -113,15 +119,15 @@ public class fragmentBT extends Fragment {
 //
 //                Toast.makeText(getActivity(), "Selected device: " + selectedDevice, Toast.LENGTH_SHORT).show();
 
-                //TODO
-                // Dopisać thread na serwer, bo to na głównym wątku nie powinno działać:
-                // BluetoothDevice selectedDevice = bluetoothManager.getAdapter().getRemoteDevice(adress);
-                // connectToDevice(selectedDevice);
+                 BluetoothDevice device = bluetoothManager.getAdapter().getRemoteDevice(adress);
+                ((MainActivity)getActivity()).connectToDevice(device);
+
+
 
             }
         });
 
-        // Inicjalizacja przycisku skanowania
+        // Inicjalizacja przycisku odświeżania
         Button refreshButton = view.findViewById(R.id.buttonRefresh);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +164,6 @@ public class fragmentBT extends Fragment {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
     }
 
-
     //TODO
     // Użyć przy połączeniu tę funkcję obsługującą zmianę napisu odnośnie statusu połączenia
     private void onConnectionStateChanged(boolean isConnected) {
@@ -170,32 +175,7 @@ public class fragmentBT extends Fragment {
     }
 
 
-    public void connectToDevice(BluetoothDevice device) {
-        BluetoothSocket socket = null;
-        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // Standardowy UUID dla SPP (Serial Port Profile)
 
-        try {
-            socket = device.createRfcommSocketToServiceRecord(uuid);
-            socket.connect();
-            Log.d(TAG, "Połączono. Status: " + socket.isConnected());
-
-            Log.d(TAG, "COS " + socket.toString());
-
-            // Tutaj możesz wykonywać operacje na połączonym urządzeniu Bluetooth
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Obsłuż błędy połączenia
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     // Aktualizacja sparowanych urządzeń w liście (aktualizacja adaptera)
     private void updatePairedDevices() {
@@ -226,7 +206,7 @@ public class fragmentBT extends Fragment {
     }
 
     //TODO
-    // Dodac permisje
+    // Dodac permisje i przenieść do MainActivity
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void checkPermissions(){
@@ -248,4 +228,8 @@ public class fragmentBT extends Fragment {
         }
         Log.v(TAG, "Perms Checked");
     }
+
+
+
+
 }

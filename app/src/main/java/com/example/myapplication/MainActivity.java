@@ -3,7 +3,14 @@ package com.example.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,8 +21,23 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
+public class MainActivity extends AppCompatActivity {
+    BluetoothSocket socket;
+    Handler bt_handler;
+    int handlerState;
+    OutputStream outputStream;
+    InputStream inputStream;
+    ConnectedThread connectedThread;
+
+    String TAG = "My Activity";
+
+    String daneBT = "CheckBT";
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        // Inicjalizacja handlera dla BT
+        bt_handler=new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == handlerState) {
+                    String readMessage = (String) msg.obj;
 
-
+                    Log.v(TAG, readMessage);
+                    daneBT = readMessage;
+                }
+            }
+        };
 
 
 
@@ -121,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Wykonaj transakcję
                 transaction.commit();
+
+
+
+
             }
         });
 
@@ -149,5 +185,65 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+    public void connectToDevice(BluetoothDevice device) {
+//        BluetoothSocket socket = null;
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // Standardowy UUID dla SPP (Serial Port Profile)
+//
+        try {
+            socket=device.createInsecureRfcommSocketToServiceRecord(uuid);
+            socket.connect();
+            outputStream=socket.getOutputStream();
+            inputStream=socket.getInputStream();
+            connectedThread = new ConnectedThread(socket);
+            connectedThread.start();
+            Log.d(TAG, "connectToDevice: Wykonane");
+
+
+
+        }catch(Exception e){
+            /** Handle the exception here **/
+        }
+    }
+
+    private class ConnectedThread extends Thread {
+        InputStream inputStream=null;
+        int avilableBytes=0;
+
+        public ConnectedThread(BluetoothSocket socket){
+            InputStream temp=null;
+            try{
+                temp=socket.getInputStream();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            inputStream=temp;
+        }
+
+        public void run() {
+            try{
+                int bytes;
+                while (true){
+                    try{
+                        avilableBytes=inputStream.available();
+                        byte[] buffer=new byte[avilableBytes];
+                        if (avilableBytes>0){
+                            bytes=inputStream.read(buffer);
+                            final String readMessage=new String(buffer);
+                            if (bytes>=3){
+                                bt_handler.obtainMessage(handlerState, bytes, -1, readMessage).sendToTarget();
+                            }
+                            else {
+                                SystemClock.sleep(100);
+                            }
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

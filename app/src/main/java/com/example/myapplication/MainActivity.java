@@ -245,5 +245,39 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        public void write(byte[] bytesToSend) {
+            try {
+                outputStream.write(bytesToSend);
+                Log.d(TAG, "write: OutputStream WYSLANO");
+                // Share the sent message with the UI activity.
+                Message writtenMsg = bt_handler.obtainMessage(
+                        handlerState, -1, -1, new String(bytesToSend));  // Cast byte[] do Stringa w tym miejscu napsuł mi dużo krwi :)
+                writtenMsg.sendToTarget();
+            } catch (IOException e) {
+                Log.e(TAG, "Error occurred when sending data", e);
+
+//                // Send a failure message back to the activity.
+//                Message writeErrorMsg =
+//                        handler.obtainMessage(MessageConstants.MESSAGE_TOAST);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("toast",
+//                        "Couldn't send data to the other device");
+//                writeErrorMsg.setData(bundle);
+//                handler.sendMessage(writeErrorMsg);
+            }
+        }
+
+
+    }
+    public void wyslij(byte[] bytesToSend) {
+        if (socket.isConnected()) {
+            connectedThread.write(bytesToSend);
+            Log.d(TAG, "wyslij: Wyslano " + new String(bytesToSend));
+        }
+        else {
+            Log.d(TAG, "wyslij: Cos sie zepsulo");
+        }
+
     }
 }

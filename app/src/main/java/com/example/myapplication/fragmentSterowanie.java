@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,6 +35,15 @@ public class fragmentSterowanie extends Fragment {
 
     String kodSwiatlaBufor = "0";
 
+    TextView przedni;
+    TextView dolny;
+    TextView temperatura;
+    TextView wilgotnosc;
+
+    Runnable runnable;
+
+    Handler handler = new Handler();
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,15 +55,7 @@ public class fragmentSterowanie extends Fragment {
         //TODO
         // Ogarnąć pobranie danych i wydzielenie ich a następnie cykliczną aktualizacje tutaj V
 
-        TextView przedni = view.findViewById(R.id.textDaneCzujnikPrzod);
-        TextView dolny = view.findViewById(R.id.textDaneCzujnikDol);
-        TextView temperatura = view.findViewById(R.id.textDaneCzujnikTemperatura);
-        TextView wilgotnosc = view.findViewById(R.id.textDaneCzujnikWilgotnosc);
 
-        przedni.setText(((MainActivity)getActivity()).daneBT);
-        dolny.setText(((MainActivity)getActivity()).daneBT);
-        temperatura.setText(((MainActivity)getActivity()).daneBT);
-        wilgotnosc.setText(((MainActivity)getActivity()).daneBT);
 
 
         ImageButton doPrzodu = view.findViewById(R.id.imageButtonGora);
@@ -151,9 +153,19 @@ public class fragmentSterowanie extends Fragment {
                 sprawdzOrazWyslij();
             }
         });
+        przedni = view.findViewById(R.id.textDaneCzujnikPrzod);
+        dolny = view.findViewById(R.id.textDaneCzujnikDol);
+        temperatura = view.findViewById(R.id.textDaneCzujnikTemperatura);
+        wilgotnosc = view.findViewById(R.id.textDaneCzujnikWilgotnosc);
 
-
-
+        ((MainActivity)getActivity()).sterowanieAktywne = true;
+        handler.postDelayed(runnable = new Runnable() {
+            @Override
+            public void run() {
+                handler.postDelayed(runnable, 300);
+                aktualizujUi();
+            }
+        }, 300);
         return view;
     }
 
@@ -217,6 +229,13 @@ public class fragmentSterowanie extends Fragment {
             ((MainActivity)getActivity()).wyslij(pakiet.getBytes());
         }
 
+    }
+
+    public void aktualizujUi() {
+        przedni.setText(((MainActivity)getActivity()).czujPrzod);
+        dolny.setText(((MainActivity)getActivity()).czujDol);
+        temperatura.setText(((MainActivity)getActivity()).czujTemp);
+        wilgotnosc.setText(((MainActivity)getActivity()).czujWilg);
     }
 
 

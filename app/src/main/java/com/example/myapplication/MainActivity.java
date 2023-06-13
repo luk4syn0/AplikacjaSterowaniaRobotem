@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.io.IOException;
@@ -37,6 +38,21 @@ public class MainActivity extends AppCompatActivity {
     String TAG = "My Activity";
 
     String daneBT = "CheckBT";
+    String[] podzieloneDane = new String[4];
+
+    String czujPrzod;
+    String czujDol;
+    String czujTemp;
+    String czujWilg;
+
+    boolean sterowanieAktywne = false;
+
+    FragmentManager manager = getSupportFragmentManager();
+
+
+
+
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.v(TAG, readMessage);
                     daneBT = readMessage;
+                    if (daneBT.length() > 7) {
+                        String x = daneBT.substring(daneBT.indexOf("'")+2, daneBT.indexOf("~"));
+                        podzieloneDane = x.split("\\|");
+                        czujPrzod = podzieloneDane[0];
+                        czujDol = podzieloneDane[1];
+                        czujWilg = podzieloneDane[2];
+                        czujTemp = podzieloneDane[3];
+                    }
+
+
+
+
                 }
             }
         };
@@ -125,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                 // Zastąp bieżący fragment nowym fragmentem
-                transaction.replace(R.id.widokGlowneMenu, fragmentController);
+                transaction.replace(R.id.widokGlowneMenu, fragmentController, "sterowanko");
 
                 // Dodaj transakcję do stosu wstecz
                 transaction.addToBackStack(null);
